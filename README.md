@@ -12,7 +12,7 @@ Because I hate making posters, this was my promposal to my girlfriend during my 
 
 ## Skill Test Workarounds
 A Collection of a few programs I wrote to get near perfect scores on tests of skill. Check out images in the folder for what they do.
-- HyperTyper:
+- HyperTyper
     - Gets "infinite" words per minute on monkeytype.com
     - Written in python with "pyTesseract" text recognition
 - Verbal Memory
