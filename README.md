@@ -2,4 +2,4 @@
 I had a bunch of little things I've done over the years, but didn't think was worth putting in its own repository. However, I still want to have them all somewhere, so here is a little museum of them
 
 ## <a href="https://html-preview.github.io/?url=https://github.com/CadenConde/Silly-Quick-Projects/blob/main/minigolfGame/minigolf.html">Minigolf Game</a>
-This was going to be included as an easter egg in the My Adventure Golf page, but was never implemented. Still kinda fun to play aorund with though.
+This was going to be included as an easter egg in the My Adventure Golf page, but was never implemented. Still kinda fun to play aorund with though. Click the link above to play. (Click & Drag > Release to shoot)
