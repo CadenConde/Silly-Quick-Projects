@@ -7,5 +7,5 @@ This was going to be included as an easter egg in the My Adventure Golf page, bu
 ## <a href="https://html-preview.github.io/?url=https://github.com/CadenConde/Silly-Quick-Projects/blob/main/Promposal/Promposal.html">Promposal</a>
 Because I hate making posters, this was my promposal to my girlfriend during my senior year of highschool. It's kind of funny, try to click "No" ;P.
 
-## Completely Eulers
-A file of my java solutions to many of the Project Euler problems I've solved. This is how I learned how to program, so please don't make fun of the **HORRIBLE** code for some of them.
+## Completed Eulers
+A file of some of my java solutions to many of the Project Euler problems I've solved. This is how I learned how to program, so please don't make fun of the **HORRIBLE** code for some of them.
