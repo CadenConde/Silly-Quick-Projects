@@ -16,10 +16,10 @@ A Collection of a few programs I wrote to get near perfect scores on tests of sk
     - Gets "infinite" words per minute on monkeytype.com
     - Written in python with "pyTesseract" text recognition
 - Verbal Memory
-    - Gets > 1000 words remembered on Humanbenchmark.com/tests/verbal-memory
+    - Gets > 1000 words remembered on humanbenchmark.com/tests/verbal-memory
     - Written in python with "pyTesseract" text recognition
 - Robot Test (Reaction Time)
-    - Gets 50-100 ms reaction time on Humanbenchmark.com/test/reactiontime
+    - Gets 50-100 ms reaction time on humanbenchmark.com/test/reactiontime
     - Written in java with Robot class
 - Perfect Circle
     - Draws a perfect circle on neal.fun/perfect-circle/
