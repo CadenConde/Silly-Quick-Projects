@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #course {
+            width: 100%;
+            height: 100%;
+            background-color: #3b9954; /* Green */
+            position: fixed;
+            z-index: -1;
+        }
+
+        .obstacle {
+            width: 150px;
+            height: 150px;
+            background-color: darkgreen;
+            border-radius: 50%;
+            position: absolute;
+            top: calc(50% - 75px);
+            left: calc(50% - 75px);
+        }
+
+        #ball {
+            width: 30px;
+            height: 30px;
+            left: 30px;
+            top: 30px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 1;
+            background-image: radial-gradient(circle, white 60%, #ccc 80%);
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .dot-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .dot {
+            display: none;
+            transition: box-shadow 0.1s ease-in-out;
+            box-shadow: 0px 0px 0px 0px rgb(255, 50, 50);
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .dot:nth-of-type(1){
+            width: 5px;
+            height: 5px;
+            display: none;
+        }
+        .dot:nth-of-type(2){
+            width: 6px;
+            height: 6px;
+        }
+        .dot:nth-of-type(3){
+            width: 9px;
+            height: 9px;
+        }
+        .dot:nth-of-type(4){
+            width: 12px;
+            height: 12px;
+        }
+        .dot:nth-of-type(5){
+            width: 15px;
+            height: 15px;
+        }
+
+    </style>
+</head>
+
+<body onload="randomizeObs()">
+    <div class="borders">
+        <div id="course"></div>
+        <div class="obstacle"></div>
+        <div class="obstacle"></div>
+        <div class="obstacle"></div>
+        <div class="obstacle"></div>
+        <div class="obstacle"></div>
+        <div class="obstacle"></div>
+        <div class="ball" id="ball"></div>
+        <div id="dot-container"></div>
+    </div>
+</body>
+
+<script>
+    const ball = document.getElementById("ball");
+    const obstacles = document.querySelectorAll(".obstacle");
+
+    let offset = 15;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    let mouseX = 0;
+    let mouseY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let showDots = false;
+    const barrierWidth = 10;
+    const friction = .97; // Friction coefficient
+    let force = 30; // Force applied to the ball
+    let repulsionForce = 4;
+
+    function randomizeObs(){
+        obstacles.forEach(obstacle => {
+            randomX = Math.random()*80+10;
+            randomY = Math.random()*80+10;
+            randWidth = Math.random()*150+150;
+            obstacle.style.top = "calc("+randomY+"% - 75px)";
+            obstacle.style.left = "calc("+randomX+"% - 75px)";
+            obstacle.style.width = randWidth + 'px'
+            obstacle.style.height = randWidth + 'px'
+        });
+    }
+
+
+
+    function handleMouseMove(event) {
+        mouseX = event.clientX - offset;
+        mouseY = event.clientY - offset;
+    }
+
+    function handleMouseDown(MouseEvent) {
+        if(MouseEvent.button == 0){
+            showDots = true;
+        }
+        updateDots(Mouse);
+    }
+
+
+
+    function handleMouseUp(MouseEvent) {
+        // Calculate the direction and apply force
+        if(MouseEvent.button == 0){
+            const dx = mouseX - ball.offsetLeft;
+            const dy = mouseY - ball.offsetTop;
+            force = Math.min(Math.max((Math.sqrt(dx*dx+dy*dy) ** 2)/2500, 3), (300**2)/2500); //max out at max power
+            const angle = Math.atan2(dy, dx);
+            velocityX += Math.cos(angle) * force;
+            velocityY += Math.sin(angle) * force;
+            showDots = false
+        }  
+    }
+
+
+
+    function update() {
+        const centerX = ball.offsetLeft + ball.offsetWidth / 2;
+        const centerY = ball.offsetTop + ball.offsetHeight / 2;
+        // Apply friction
+        velocityX *= friction;
+        velocityY *= friction;
+
+        // Update ball position
+        ball.style.left = ball.offsetLeft + velocityX + "px";
+        ball.style.top = ball.offsetTop + velocityY + "px";
+
+        obstacles.forEach(obstacle => {
+            const dx = ball.offsetLeft + ball.offsetWidth / 2 - obstacle.offsetLeft - obstacle.offsetWidth / 2;
+            const dy = ball.offsetTop + ball.offsetHeight / 2 - obstacle.offsetTop - obstacle.offsetHeight / 2;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            const velocityMagnitude = Math.sqrt(velocityX ** 2 + velocityY ** 2);
+            repulsionForce = velocityMagnitude/3;
+
+            if (distance < ball.offsetWidth / 2 + obstacle.offsetWidth / 2) {
+                // Calculate the normal vector
+                const normalX = dx / distance;
+                const normalY = dy / distance;
+
+                // Calculate the dot product of velocity and normal
+                const dotProduct = velocityX * normalX + velocityY * normalY;
+
+                // Calculate the reflection vector
+                const reflectionX = velocityX - 2 * dotProduct * normalX;
+                const reflectionY = velocityY - 2 * dotProduct * normalY;
+
+                // Update velocity with reflection
+                velocityX = reflectionX;
+                velocityY = reflectionY;
+
+                // Apply repulsion force to push the ball out of the obstacle
+                const repulsionX = repulsionForce * normalX;
+                const repulsionY = repulsionForce * normalY;
+                velocityX += repulsionX;
+                velocityY += repulsionY;
+            }
+        });
+
+        // Detect and handle collision with barriers
+        if (centerX - ball.offsetWidth / 2 <= barrierWidth) {
+            velocityX = Math.abs(velocityX); // Ensure positive X velocity
+        } else if (centerX + ball.offsetWidth / 2 >= windowWidth - barrierWidth) {
+            velocityX = -Math.abs(velocityX); // Ensure negative X velocity
+        }
+
+        if (centerY - ball.offsetHeight / 2 <= barrierWidth) {
+            velocityY = Math.abs(velocityY); // Ensure positive Y velocity
+        } else if (centerY + ball.offsetHeight / 2 >= windowHeight - barrierWidth) {
+            velocityY = -Math.abs(velocityY); // Ensure negative Y velocity
+        }
+
+
+        // Request next frame
+        requestAnimationFrame(update);
+    }
+
+    // Event listeners
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    const dotContainer = document.getElementById("dot-container");
+    const numDots = 5;
+    const maxDistance = 300;
+    const maxScale = 2;
+    const dots = [];
+
+    // Create dots
+    for (let i = 0; i < numDots; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        dotContainer.appendChild(dot);
+        dots.push(dot);
+    }
+
+    function updateDots(event) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+        const centerX = ball.offsetLeft + ball.offsetWidth / 2;
+        const centerY = ball.offsetTop + ball.offsetHeight / 2;
+
+        const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+        const scaleFactor = 1 + Math.min(distance / maxDistance, 1) * (maxScale - 1);
+
+        for (let i = 0; i < numDots; i++) {
+            if(showDots == true){
+                dots[i].style.display = "initial";
+            }
+            else{
+                dots[i].style.display = "none";
+            }
+
+
+
+            const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+            let dotDistance = Math.min(distance, maxDistance);
+
+            const dotSize = 5 + (maxDistance - dotDistance) / maxDistance * 15; // Scale size based on distance
+            const dotX = centerX + Math.cos(angle) * dotDistance * (i / (numDots - 1));
+            const dotY = centerY + Math.sin(angle) * dotDistance * (i / (numDots - 1));
+
+            dots[i].style.scale = scaleFactor;
+            //dots[i].style.height = dotSize * scaleFactor + "px";
+            
+            dots[i].style.left = dotX - ((i*3) * scaleFactor) / 2 + "px";
+            dots[i].style.top = dotY - ((i*3) * scaleFactor) / 2 + "px";
+            var redness = (dotDistance/300)*255;
+            dots[i].style.backgroundColor = "rgb(" + redness + "," + redness/7 + "," + redness/7 + ")" // Change color based on distance
+            
+
+            if(dotDistance == maxDistance){
+                dots[i].style.boxShadow = "0px 0px 2px 2px rgb(255, 150, 150)"
+                
+            }
+            else{
+                dots[i].style.boxShadow = "none";
+            }
+            
+        }
+    }
+    document.addEventListener("mousemove", updateDots);
+
+    // Start the animation loop
+    update();
+
+
+    
+</script>
+</html>
