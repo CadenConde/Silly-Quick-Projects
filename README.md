@@ -10,6 +10,21 @@ This was going to be included as an easter egg in the My Adventure Golf page, bu
 ## <a href="https://html-preview.github.io/?url=https://github.com/CadenConde/Silly-Quick-Projects/blob/main/Promposal/Promposal.html">Promposal</a>
 Because I hate making posters, this was my promposal to my girlfriend during my senior year of highschool. It's kind of funny, try to click "No" ;P.
 
+## Skill Test Workarounds
+A Collection of a few programs I wrote to get near perfect scores on tests of skill. Check out images in the folder for what they do.
+- HyperTyper:
+    - Gets "infinite" words per minute on monkeytype.com
+    - Written in python with "pyTesseract" text recognition
+- Verbal Memory
+    - Gets > 1000 words remembered on Humanbenchmark.com/tests/verbal-memory
+    - Written in python with "pyTesseract" text recognition
+- Robot Test (Reaction Time)
+    - Gets 50-100 ms reaction time on Humanbenchmark.com/test/reactiontime
+    - Written in java with Robot class
+- Perfect Circle
+    - Draws a perfect circle on neal.fun/perfect-circle/
+    - Written in java using Robot class
+      
 ## Completed Eulers
 A file of some of my java solutions to many of the Project Euler problems I've solved. This is how I learned how to program, so please don't make fun of the **HORRIBLE** code for some of them.
 
