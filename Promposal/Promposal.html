@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+         overflow: hidden;
+        }
+        h1{
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color:#c5ccd8;
+            font-size: 50px;
+        }
+        .moreText{
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color:#c5ccd8;
+            font-size: 50px;
+        }
+
+        canvas {
+            overflow-y: hidden;
+            overflow-x: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            z-index: 10;
+          }
+        /* CSS */
+        body {
+            --bgColor:#2e2e30;
+            background-color:#2e2e30;
+        }
+
+        button.btnYes {
+            --gradient:#f44, #e74, #cb3, #5c5, #5ca, #78e, #d6d;
+            background: linear-gradient(90deg,
+                var(--gradient),var(--gradient),var(--gradient));
+            /* It actually scrolls from the second gradient to the third so the left and right edges aren't fkted up */
+            background-size:600%;
+            outline:0;
+            padding:.2em .5em;
+            border-radius:.2em;
+            font-size:10vmin;
+            border:none;
+            color:#c5ccd8;
+            opacity:.8;
+            position:absolute;
+            left:20%;
+            top:50%;
+            scale: 2;
+            z-index:2;
+            box-sizing:border-box;
+            
+
+            animation:scrollbg linear 6s infinite, dundundun linear 1.3s infinite;
+            filter:saturate(1);
+
+            transition:.2s ease;
+            transition: left .5s ease-in-out;
+            filter:saturate(.6);
+            cursor:pointer;
+        }
+
+        @keyframes scrollbg {
+            0% {
+                background-position:33.333333333333333% 0%;
+                /* Second gradient ((600%/3) / 600%) */
+            }
+            100% {
+                background-position:75% 0%;
+                /* Third gradient + half width ((600%/3 * 2 + 50%) / 600%) */
+            }
+        }
+        @keyframes dundundun {
+            0% {
+                transform:scale(1.05) rotate(1deg);
+            }
+            50% {
+                transform:scale(1.0);
+            }
+            50.01% {
+                transform:scale(1.05) rotate(-1deg);
+            }
+            100% {
+                transform:scale(1.0);
+            }
+        }
+
+        button.btnYes:hover {
+            color:#fff;
+            animation:scrollbg linear .5s infinite;
+            filter:saturate(1);
+            transform:scale(1.1);
+            opacity:1;
+        }
+        button.btnYes:active {
+            color:#fff;
+            animation:scrollbg linear .5s infinite;
+            filter:saturate(1);
+            transform:scale(1.1);
+            opacity:1;
+        }
+        button.btnYes:before {
+            background-color:var(--bgColor);
+            content:'';
+            position:absolute;
+            left:.1em;
+            top:.1em;
+            width:calc(100% - .2em);
+            height:calc(100% - .2em);
+            border-radius:.1em;
+            z-index:-1;
+        }
+        button.btnYes:active:before {
+            opacity: .8;
+        }
+        button.btnYes:after {
+            background:inherit;
+            content:'';
+            position:absolute;
+            left:.2em;
+            top:.2em;
+            width:calc(100% - .4em);
+            height:calc(100% - .4em);
+            filter:blur(32px);
+            opacity:0;
+            border-radius:.1em;
+            z-index:-2;
+        }
+        button.btnYes:hover:after {
+            opacity:1;
+        }
+        button.btnYes:active:after {
+            opacity:1;
+            filter:blur(48px);
+        }
+
+        button.btnNo{
+            box-shadow: 5px 5px #000000;
+            text-align: right;
+            position: absolute;
+            padding: 30px 50px;
+            padding-left: 160px;
+            border-radius:.2em;
+            font-size: 8vmin;
+            right:10%;
+            top:50%;
+            scale:1;
+            transition: opacity .2s ease;
+            border: none;
+
+            background-color: rgb(169, 39, 39);
+            background-image: url(https://marvelapp.com/styleguide/assets/images/icon-sad--m.svg);
+            background-repeat: no-repeat;
+            background-size: 180px;
+            background-position: -20px;
+            z-index: 10;
+        }
+
+        .rainbow-text {
+            background-image: repeating-linear-gradient(45deg, rgb(255, 177, 255), rgb(178, 70, 255), rgb(87, 87, 255), rgb(65, 240, 65), yellow, rgb(255, 192, 76), rgb(251, 84, 84), rgb(255, 172, 255));
+            background-size: 400% 400%;
+            background-clip: text;
+            font-size: 100px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease infinite;
+          }
+          
+          @keyframes rainbow { 
+              0%{background-position:0% 50%}
+              50%{background-position:100% 25%}
+              100%{background-position:0% 50%}
+          }
+
+
+    </style>
+</head>
+
+
+<body>
+    <canvas id="canvas"></canvas>
+    <h1 class="Question">Do you want to go to prom with me?</h1>
+    <div class="moreText"></div>
+    <button onclick="btnConfirm()" class="btnYes">YES!</button>
+    <button onclick="btnCancel()" onmouseover="myOverFunction()" class="btnNo">No...</button>
+    <img id = "dance1" src="https://media.tenor.com/2l4-h42qnmcAAAAi/toothless-dancing-toothless.gif" alt="Happy Dance" style="width:800px; position:absolute; left:-5%; top:25%">
+    <img id = "dance2" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWNxaTVpbzZnZzF3OTc5dG43bDB3d21qNnRwc3AzM2JyZjlwM3VwMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/JRsQiAN79bPWUv43Ko/giphy.gif" alt="Happy Dance2" style="width:500px; position:absolute; left:60%; top:25%">
+</body>
+
+
+<script>
+    const headerTitle = document.querySelector(".Question");
+    const yesBtn = document.querySelector(".btnYes");
+    const text = document.querySelector(".moreText");
+    const dance1 = document.getElementById("dance1");
+    const dance2 = document.getElementById("dance2");
+    const noBtn = document.querySelector(".btnNo");
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    dance1.style.display = "none";
+    dance2.style.display = "none";
+
+    const barrierWidth = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    let phase = 1;
+    let opacity = 1;
+    let yesScale = 2;
+
+    let veloX = 0;
+    let veloY = 0;
+    friction = .95;
+
+    let mouseOver = false;
+    let scaleVar = .8;
+    noBtn.style.scale = scaleVar;
+
+    noBtn.addEventListener("mouseenter", myOverFunction);
+    noBtn.addEventListener("mouseleave", mouseLeaveFunc);
+    document.addEventListener("mousemove", setMousePos);
+
+    function setMousePos(event){
+        mouseX = event.clientX;
+        mouseY = event.clientY
+    }
+
+    function update1(){
+        if(mouseOver == true){
+            console.log("test")
+            scaleVar *= .95
+            if(scaleVar > .35){
+                noBtn.style.scale = scaleVar;
+                requestAnimationFrame(update1);
+            }
+            else{
+                //console.log(noBtn.offsetWidth + ":" + noBtn.offsetHeight)
+                phase = 2;
+                update2();
+            }
+        }
+    }
+
+    function update2(){
+        let btnX = noBtn.offsetLeft + noBtn.offsetWidth / 2;
+        let btnY = noBtn.offsetTop + noBtn.offsetHeight / 2;
+        let speed = 10;
+        let dy = btnY - mouseY;
+        let dx = btnX - mouseX;
+        //console.log(veloX)
+        
+
+        if(Math.sqrt((dy*dy + dx*dx)) < 100){
+            theta = Math.atan2(dy, dx);
+            veloY += Math.sin(theta)*speed;
+            veloX += Math.cos(theta)*speed;
+            noBtn.style.scale = scaleVar;
+            scaleVar *= .995;
+
+            if(yesScale < 4){
+                yesBtn.style.scale = yesScale;
+                yesScale += .02;
+            }
+            difference = (windowWidth - (yesBtn.offsetLeft + yesBtn.offsetWidth)) - yesBtn.offsetLeft;
+            console.log(difference)
+            yesBtn.style.left = yesBtn.offsetLeft + difference/30 + "px"
+            
+            
+        }
+
+        if(veloX != 0 || veloY != 0){
+            veloX *= friction;
+            veloY *= friction;
+            noBtn.style.width = "312px";
+            noBtn.style.height = "128px"
+            noBtn.style.left = noBtn.offsetLeft + veloX + "px";
+            noBtn.style.top = noBtn.offsetTop + veloY + "px";
+        }
+
+        // Detect and handle collision with barriers
+        if (btnX - noBtn.offsetWidth / 2 <= 2*(-312*.36) ) {
+            noBtn.style.left = windowWidth - 312 * .36 - 30 + "px";
+            veloX = -20;
+        } else if (btnX - noBtn.offsetWidth / 2 >= windowWidth - 312 * .36 ) {
+            noBtn.style.left = (-312*.36) + "px";
+            veloX = 20;
+        }
+
+        if (btnY - noBtn.offsetHeight / 2 <= barrierWidth) {
+            veloY = Math.abs(veloY); // Ensure positive Y velocity
+        } else if (btnY + noBtn.offsetHeight / 2 >= windowHeight - barrierWidth) {
+            veloY = -Math.abs(veloY); // Ensure negative Y velocity
+        }
+
+
+        requestAnimationFrame(update2);
+    }
+
+
+    function mouseLeaveFunc(){
+        mouseOver = false;
+        console.log("out")
+    }
+
+    function myOverFunction(){
+        if(phase == 1){
+            mouseOver = true;
+            update1();
+        }
+    }
+
+    
+
+    function btnConfirm(){
+        noBtn.remove();
+        headerTitle.innerHTML = "YAYYYYYYYYYYY!!!!!!!!!!!!!!";
+        canvas.style.display = "initial";
+        dance1.style.display = "initial";
+        dance2.style.display = "initial";
+        //text.innerHTML = "See you May 4th! <br> I love you <3"
+        headerTitle.classList.add("rainbow-text");
+        yesBtn.remove();
+    }
+
+    function btnCancel(){
+        return true;
+    }
+
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    const canvas = document.getElementById("canvas");
+    canvas.style.display = "none";
+    const context = canvas.getContext("2d");
+    const maxConfettis = 150;
+    const particles = [];
+    
+    const possibleColors = [
+      "DodgerBlue",
+      "OliveDrab",
+      "Gold",
+      "Pink",
+      "SlateBlue",
+      "LightBlue",
+      "Gold",
+      "Violet",
+      "PaleGreen",
+      "SteelBlue",
+      "SandyBrown",
+      "Chocolate",
+      "Crimson"
+    ];
+    
+    function randomFromTo(from, to) {
+      return Math.floor(Math.random() * (to - from + 1) + from);
+    }
+    
+    function confettiParticle() {
+      this.x = Math.random() * W; // x
+      this.y = Math.random() * H - H; // y
+      this.r = randomFromTo(11, 33); // radius
+      this.d = Math.random() * maxConfettis + 11;
+      this.color =
+        possibleColors[Math.floor(Math.random() * possibleColors.length)];
+      this.tilt = Math.floor(Math.random() * 33) - 11;
+      this.tiltAngleIncremental = Math.random() * 0.07 + 0.05;
+      this.tiltAngle = 0;
+    
+      this.draw = function() {
+        context.beginPath();
+        context.lineWidth = this.r / 2;
+        context.strokeStyle = this.color;
+        context.moveTo(this.x + this.tilt + this.r / 3, this.y);
+        context.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 5);
+        return context.stroke();
+      };
+    }
+    
+    function Draw() {
+      const results = [];
+    
+      // Magical recursive functional love
+      requestAnimationFrame(Draw);
+    
+      context.clearRect(0, 0, W, window.innerHeight);
+    
+      for (var i = 0; i < maxConfettis; i++) {
+        results.push(particles[i].draw());
+      }
+    
+      let particle = {};
+      let remainingFlakes = 0;
+      for (var i = 0; i < maxConfettis; i++) {
+        particle = particles[i];
+    
+        particle.tiltAngle += particle.tiltAngleIncremental;
+        particle.y += (Math.cos(particle.d) + 3 + particle.r / 2) / 2;
+        particle.tilt = Math.sin(particle.tiltAngle - i / 3) * 15;
+    
+        if (particle.y <= H) remainingFlakes++;
+    
+        // If a confetti has fluttered out of view,
+        // bring it back to above the viewport and let if re-fall.
+        if (particle.x > W + 30 || particle.x < -30 || particle.y > H) {
+          particle.x = Math.random() * W;
+          particle.y = -30;
+          particle.tilt = Math.floor(Math.random() * 10) - 20;
+        }
+      }
+    
+      return results;
+    }
+    
+    window.addEventListener(
+      "resize",
+      function() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      },
+      false
+    );
+    
+    // Push new confetti objects to `particles[]`
+    for (var i = 0; i < maxConfettis; i++) {
+      particles.push(new confettiParticle());
+    }
+    
+    // Initialize
+    canvas.width = W;
+    canvas.height = H;
+    Draw();
+
+
+</script> 
+
+
+</html>
