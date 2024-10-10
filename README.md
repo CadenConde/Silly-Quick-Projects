@@ -24,7 +24,3 @@ A Collection of a few programs I wrote to get near perfect scores on tests of sk
 - Perfect Circle
     - Draws a perfect circle on neal.fun/perfect-circle/
     - Written in java using Robot class
-      
-## Completed Eulers
-A file of some of my java solutions to many of the Project Euler problems I've solved. This is how I learned how to program, so please don't make fun of the **HORRIBLE** code for some of them.
-
